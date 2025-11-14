@@ -1,0 +1,230 @@
+@import 'tailwindcss';
+@import './brand.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Sora', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Brand Design System */
+:root {
+    /* Brand Colors */
+    --brand-black: #000000;
+    --brand-red: #ef473e;
+    --brand-orange: #fdb838;
+    --brand-dark-blue: #070c39;
+    
+    /* Brand Gradients */
+    --brand-gradient: linear-gradient(135deg, #fdb838 0%, #ef473e 100%);
+    --brand-gradient-hover: linear-gradient(135deg, #ef473e 0%, #fdb838 100%);
+    
+    /* Background Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-dark: #000000;
+    
+    /* Text Colors */
+    --text-primary: #000000;
+    --text-secondary: #6c757d;
+    --text-light: #ffffff;
+    
+    /* Typography */
+    --font-family: 'Sora', sans-serif;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+}
+
+/* Global Typography */
+body {
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-normal);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+}
+
+/* Brand Button Styles */
+.btn-brand {
+    background: var(--brand-gradient);
+    border: none;
+    color: var(--text-light);
+    font-weight: var(--font-weight-semibold);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-brand:hover {
+    background: var(--brand-gradient-hover);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 71, 62, 0.3);
+}
+
+.btn-brand-outline {
+    border: 2px solid var(--brand-red);
+    color: var(--brand-red);
+    background: transparent;
+    font-weight: var(--font-weight-semibold);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-brand-outline:hover {
+    background: var(--brand-red);
+    color: var(--text-light);
+    transform: translateY(-2px);
+}
+
+/* Brand Card Styles */
+.card-brand {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--bg-primary);
+}
+
+.card-brand-header {
+    background: var(--brand-gradient);
+    color: var(--text-light);
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Brand Sidebar */
+.sidebar-brand {
+    min-height: 100vh;
+}
+
+.sidebar-brand .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin: 0.25rem 0;
+    font-weight: var(--font-weight-medium);
+    transition: all 0.3s ease;
+}
+
+.sidebar-brand .nav-link:hover,
+.sidebar-brand .nav-link.active {
+    color: var(--text-light);
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
+}
+
+/* Brand Form Controls */
+.form-control-brand {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-family);
+    transition: all 0.3s ease;
+}
+
+.form-control-brand:focus {
+    border-color: var(--brand-red);
+    box-shadow: 0 0 0 0.2rem rgba(239, 71, 62, 0.25);
+}
+
+/* Brand Alerts */
+.alert-brand-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    border-radius: 8px;
+}
+
+.alert-brand-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 8px;
+}
+
+.alert-brand-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    border-radius: 8px;
+}
+
+/* Brand Navigation */
+.navbar-brand-custom {
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+/* Brand Pagination */
+.pagination-brand .page-link {
+    color: var(--text-primary);
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    font-weight: var(--font-weight-medium);
+    transition: all 0.3s ease;
+}
+
+.pagination-brand .page-link:hover {
+    color: var(--brand-red);
+    background-color: rgba(239, 71, 62, 0.1);
+    border-color: var(--brand-red);
+}
+
+.pagination-brand .page-item.active .page-link {
+    background: var(--brand-gradient);
+    border-color: var(--brand-red);
+    color: var(--text-light);
+}
+
+/* Brand Badges */
+.badge-brand {
+    background: var(--brand-gradient);
+    color: var(--text-light);
+    font-weight: var(--font-weight-medium);
+    border-radius: 6px;
+}
+
+/* Brand Tables */
+.table-brand {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-brand thead th {
+    background: var(--brand-gradient);
+    color: var(--text-light);
+    font-weight: var(--font-weight-semibold);
+    border: none;
+}
+
+/* Brand Modals */
+.modal-brand .modal-header {
+    background: var(--brand-gradient);
+    color: var(--text-light);
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-brand .modal-title {
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar-brand {
+        min-height: auto;
+    }
+    
+    .btn-brand {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,1710 @@
+@extends('layouts.app')
+
+@section('title', 'System Settings')
+
+@section('content')
+
+<!-- Page Header -->
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="page-title">
+                <i class="fas fa-cog me-3"></i>System Settings
+            </h1>
+            <p class="page-subtitle">Configure and manage your platform settings</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="header-actions">
+                <button type="submit" form="settingsForm" class="btn btn-light">
+                    <i class="fas fa-save me-2"></i>Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form method="POST" action="{{ route('admin.settings.update') }}" id="settingsForm">
+    @csrf
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <h5 class="modern-card-title">
+                        <i class="fas fa-sliders-h me-2"></i>General Settings
+                    </h5>
+                    <p class="modern-card-subtitle">Basic application configuration and contact information</p>
+            </div>
+                <div class="modern-card-body">
+                
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="app_name" class="form-label">
+                                <i class="fas fa-tag me-2"></i>Application Name
+                            </label>
+                            <input type="text" class="form-control modern-input @error('app_name') is-invalid @enderror" 
+                                   id="app_name" name="app_name" 
+                                   value="{{ $settings['app_name']->value ?? 'Online Lesson Booking System' }}" required>
+                            @error('app_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact_email" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Contact Email
+                            </label>
+                            <input type="email" class="form-control modern-input @error('contact_email') is-invalid @enderror" 
+                                   id="contact_email" name="contact_email" 
+                                   value="{{ $settings['contact_email']->value ?? 'admin@example.com' }}" required>
+                            @error('contact_email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_phone" class="form-label">Contact Phone</label>
+                            <input type="text" class="form-control @error('contact_phone') is-invalid @enderror" 
+                                   id="contact_phone" name="contact_phone" 
+                                   value="{{ $settings['contact_phone']->value ?? '+1234567890' }}">
+                            @error('contact_phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <select class="form-select @error('timezone') is-invalid @enderror" id="timezone" name="timezone" required>
+                                <option value="UTC" {{ ($settings['timezone']->value ?? 'UTC') === 'UTC' ? 'selected' : '' }}>UTC</option>
+                                <option value="America/New_York" {{ ($settings['timezone']->value ?? 'UTC') === 'America/New_York' ? 'selected' : '' }}>Eastern Time</option>
+                                <option value="America/Chicago" {{ ($settings['timezone']->value ?? 'UTC') === 'America/Chicago' ? 'selected' : '' }}>Central Time</option>
+                                <option value="America/Denver" {{ ($settings['timezone']->value ?? 'UTC') === 'America/Denver' ? 'selected' : '' }}>Mountain Time</option>
+                                <option value="America/Los_Angeles" {{ ($settings['timezone']->value ?? 'UTC') === 'America/Los_Angeles' ? 'selected' : '' }}>Pacific Time</option>
+                                <option value="Europe/London" {{ ($settings['timezone']->value ?? 'UTC') === 'Europe/London' ? 'selected' : '' }}>London</option>
+                                <option value="Europe/Paris" {{ ($settings['timezone']->value ?? 'UTC') === 'Europe/Paris' ? 'selected' : '' }}>Paris</option>
+                                <option value="Asia/Tokyo" {{ ($settings['timezone']->value ?? 'UTC') === 'Asia/Tokyo' ? 'selected' : '' }}>Tokyo</option>
+                            </select>
+                            @error('timezone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="currency" class="form-label">Currency</label>
+                            <select class="form-select @error('currency') is-invalid @enderror" id="currency" name="currency" required>
+                                <option value="USD" {{ ($settings['currency']->value ?? 'USD') === 'USD' ? 'selected' : '' }}>USD ($)</option>
+                                <option value="EUR" {{ ($settings['currency']->value ?? 'USD') === 'EUR' ? 'selected' : '' }}>EUR (€)</option>
+                                <option value="GBP" {{ ($settings['currency']->value ?? 'USD') === 'GBP' ? 'selected' : '' }}>GBP (£)</option>
+                                <option value="JPY" {{ ($settings['currency']->value ?? 'USD') === 'JPY' ? 'selected' : '' }}>JPY (¥)</option>
+                                <option value="CAD" {{ ($settings['currency']->value ?? 'USD') === 'CAD' ? 'selected' : '' }}>CAD (C$)</option>
+                            </select>
+                            @error('currency')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="lesson_duration_default" class="form-label">Default Lesson Duration (minutes)</label>
+                            <input type="number" class="form-control @error('lesson_duration_default') is-invalid @enderror" 
+                                   id="lesson_duration_default" name="lesson_duration_default" 
+                                   value="{{ $settings['lesson_duration_default']->value ?? 60 }}" min="15" max="480" required>
+                            @error('lesson_duration_default')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cancellation_policy_hours" class="form-label">Cancellation Policy (hours before lesson)</label>
+                            <input type="number" class="form-control @error('cancellation_policy_hours') is-invalid @enderror" 
+                                   id="cancellation_policy_hours" name="cancellation_policy_hours" 
+                                   value="{{ $settings['cancellation_policy_hours']->value ?? 24 }}" min="0" required>
+                            @error('cancellation_policy_hours')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="app_description" class="form-label">Application Description</label>
+                        <textarea class="form-control @error('app_description') is-invalid @enderror" 
+                                  id="app_description" name="app_description" rows="3">{{ $settings['app_description']->value ?? 'A comprehensive online lesson booking system for teachers and students.' }}</textarea>
+                        @error('app_description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Settings
+                        </button>
+                    </div>
+            </div>
+        </div>
+
+        <!-- Theme Customization Settings -->
+        <div class="modern-card mt-4">
+            <div class="modern-card-header">
+                <h5 class="modern-card-title">
+                    <i class="fas fa-palette me-2"></i>Theme Customization
+                </h5>
+                <p class="modern-card-subtitle">Customize the appearance and branding of your platform</p>
+            </div>
+            <div class="modern-card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="primary_bg_color" class="form-label">Primary Background Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('primary_bg_color') is-invalid @enderror" 
+                                   id="primary_bg_color" name="primary_bg_color" 
+                                   value="{{ $settings['primary_bg_color']->value ?? '#f8f9fa' }}" 
+                                   title="Choose primary background color">
+                            <input type="text" class="form-control" id="primary_bg_color_text" 
+                                   value="{{ $settings['primary_bg_color']->value ?? '#f8f9fa' }}" 
+                                   placeholder="#f8f9fa" readonly>
+                        </div>
+                        @error('primary_bg_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Main background color for the application</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="secondary_bg_color" class="form-label">Secondary Background Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('secondary_bg_color') is-invalid @enderror" 
+                                   id="secondary_bg_color" name="secondary_bg_color" 
+                                   value="{{ $settings['secondary_bg_color']->value ?? '#ffffff' }}" 
+                                   title="Choose secondary background color">
+                            <input type="text" class="form-control" id="secondary_bg_color_text" 
+                                   value="{{ $settings['secondary_bg_color']->value ?? '#ffffff' }}" 
+                                   placeholder="#ffffff" readonly>
+                        </div>
+                        @error('secondary_bg_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Secondary background for cards and panels</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="primary_text_color" class="form-label">Primary Text Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('primary_text_color') is-invalid @enderror" 
+                                   id="primary_text_color" name="primary_text_color" 
+                                   value="{{ $settings['primary_text_color']->value ?? '#212529' }}" 
+                                   title="Choose primary text color">
+                            <input type="text" class="form-control" id="primary_text_color_text" 
+                                   value="{{ $settings['primary_text_color']->value ?? '#212529' }}" 
+                                   placeholder="#212529" readonly>
+                        </div>
+                        @error('primary_text_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Main text color for headings and important content</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="secondary_text_color" class="form-label">Secondary Text Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('secondary_text_color') is-invalid @enderror" 
+                                   id="secondary_text_color" name="secondary_text_color" 
+                                   value="{{ $settings['secondary_text_color']->value ?? '#6c757d' }}" 
+                                   title="Choose secondary text color">
+                            <input type="text" class="form-control" id="secondary_text_color_text" 
+                                   value="{{ $settings['secondary_text_color']->value ?? '#6c757d' }}" 
+                                   placeholder="#6c757d" readonly>
+                        </div>
+                        @error('secondary_text_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Secondary text color for descriptions and labels</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="accent_color" class="form-label">Accent Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('accent_color') is-invalid @enderror" 
+                                   id="accent_color" name="accent_color" 
+                                   value="{{ $settings['accent_color']->value ?? '#007bff' }}" 
+                                   title="Choose accent color">
+                            <input type="text" class="form-control" id="accent_color_text" 
+                                   value="{{ $settings['accent_color']->value ?? '#007bff' }}" 
+                                   placeholder="#007bff" readonly>
+                        </div>
+                        @error('accent_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Accent color for buttons and highlights</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="border_color" class="form-label">Border Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('border_color') is-invalid @enderror" 
+                                   id="border_color" name="border_color" 
+                                   value="{{ $settings['border_color']->value ?? '#dee2e6' }}" 
+                                   title="Choose border color">
+                            <input type="text" class="form-control" id="border_color_text" 
+                                   value="{{ $settings['border_color']->value ?? '#dee2e6' }}" 
+                                   placeholder="#dee2e6" readonly>
+                        </div>
+                        @error('border_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Border color for cards and form elements</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="navbar_bg_color" class="form-label">Navigation Background</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('navbar_bg_color') is-invalid @enderror" 
+                                   id="navbar_bg_color" name="navbar_bg_color" 
+                                   value="{{ $settings['navbar_bg_color']->value ?? '#212529' }}" 
+                                   title="Choose navigation background color">
+                            <input type="text" class="form-control" id="navbar_bg_color_text" 
+                                   value="{{ $settings['navbar_bg_color']->value ?? '#212529' }}" 
+                                   placeholder="#212529" readonly>
+                        </div>
+                        @error('navbar_bg_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Background color for navigation bar</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="navbar_text_color" class="form-label">Navigation Text Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('navbar_text_color') is-invalid @enderror" 
+                                   id="navbar_text_color" name="navbar_text_color" 
+                                   value="{{ $settings['navbar_text_color']->value ?? '#ffffff' }}" 
+                                   title="Choose navigation text color">
+                            <input type="text" class="form-control" id="navbar_text_color_text" 
+                                   value="{{ $settings['navbar_text_color']->value ?? '#ffffff' }}" 
+                                   placeholder="#ffffff" readonly>
+                        </div>
+                        @error('navbar_text_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Text color for navigation items</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="sidebar_bg_color" class="form-label">Sidebar Background</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('sidebar_bg_color') is-invalid @enderror" 
+                                   id="sidebar_bg_color" name="sidebar_bg_color" 
+                                   value="{{ $settings['sidebar_bg_color']->value ?? '#fd7e14' }}" 
+                                   title="Choose sidebar background color">
+                            <input type="text" class="form-control" id="sidebar_bg_color_text" 
+                                   value="{{ $settings['sidebar_bg_color']->value ?? '#fd7e14' }}" 
+                                   placeholder="#fd7e14" readonly>
+                        </div>
+                        @error('sidebar_bg_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Background color for sidebar</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="sidebar_text_color" class="form-label">Sidebar Text Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('sidebar_text_color') is-invalid @enderror" 
+                                   id="sidebar_text_color" name="sidebar_text_color" 
+                                   value="{{ $settings['sidebar_text_color']->value ?? '#ffffff' }}" 
+                                   title="Choose sidebar text color">
+                            <input type="text" class="form-control" id="sidebar_text_color_text" 
+                                   value="{{ $settings['sidebar_text_color']->value ?? '#ffffff' }}" 
+                                   placeholder="#ffffff" readonly>
+                        </div>
+                        @error('sidebar_text_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Text color for sidebar items</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="sidebar_hover_color" class="form-label">Sidebar Hover Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('sidebar_hover_color') is-invalid @enderror" 
+                                   id="sidebar_hover_color" name="sidebar_hover_color" 
+                                   value="{{ $settings['sidebar_hover_color']->value ?? '#e55a00' }}" 
+                                   title="Choose sidebar hover color">
+                            <input type="text" class="form-control" id="sidebar_hover_color_text" 
+                                   value="{{ $settings['sidebar_hover_color']->value ?? '#e55a00' }}" 
+                                   placeholder="#e55a00" readonly>
+                        </div>
+                        @error('sidebar_hover_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Hover color for sidebar items</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="page_header_bg_color" class="form-label">Page Header Background Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color @error('page_header_bg_color') is-invalid @enderror" 
+                                   id="page_header_bg_color" name="page_header_bg_color" 
+                                   value="{{ $settings['page_header_bg_color']->value ?? '#f8f9fa' }}" 
+                                   title="Choose page header background color">
+                            <input type="text" class="form-control" id="page_header_bg_color_text" 
+                                   value="{{ $settings['page_header_bg_color']->value ?? '#f8f9fa' }}" 
+                                   placeholder="#f8f9fa" readonly>
+                        </div>
+                        @error('page_header_bg_color')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Background color for page headers (h1, h2, h3, h4, h5, h6)</small>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                <h6 class="mb-3">🎨 Gradient Settings</h6>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="use_gradients_checkbox" 
+                                   {{ ($settings['use_gradients']->value == 1)? 'checked' : '' }}>
+                            <input type="hidden" id="use_gradients" name="use_gradients" 
+                                   value="{{ ($settings['use_gradients']->value == 1)? '1' : '' }}">
+                            <label class="form-check-label" for="use_gradients_checkbox">
+                                Enable Gradients
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">Use gradient backgrounds instead of solid colors</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="brand_gradient" class="form-label">Brand Gradient</label>
+                        <input type="text" class="form-control gradient-field @error('brand_gradient') is-invalid @enderror" 
+                               id="brand_gradient" name="brand_gradient" 
+                               value="{{ $settings['brand_gradient']->value ?? 'linear-gradient(135deg, #fdb838 0%, #ef473e 100%)' }}" 
+                               placeholder="linear-gradient(135deg, #fdb838 0%, #ef473e 100%)">
+                        @error('brand_gradient')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Main brand gradient for buttons and accents</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="sidebar_gradient" class="form-label">Sidebar Gradient</label>
+                        <input type="text" class="form-control gradient-field @error('sidebar_gradient') is-invalid @enderror" 
+                               id="sidebar_gradient" name="sidebar_gradient" 
+                               value="{{ $settings['sidebar_gradient']->value ?? 'linear-gradient(135deg, #fdb838 0%, #ef473e 100%)' }}" 
+                               placeholder="linear-gradient(135deg, #fdb838 0%, #ef473e 100%)">
+                        @error('sidebar_gradient')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Gradient for sidebar background</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="navbar_gradient" class="form-label">Navbar Gradient</label>
+                        <input type="text" class="form-control gradient-field @error('navbar_gradient') is-invalid @enderror" 
+                               id="navbar_gradient" name="navbar_gradient" 
+                               value="{{ $settings['navbar_gradient']->value ?? 'linear-gradient(135deg, #212529 0%, #343a40 100%)' }}" 
+                               placeholder="linear-gradient(135deg, #212529 0%, #343a40 100%)">
+                        @error('navbar_gradient')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Gradient for navigation bar</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="accent_gradient" class="form-label">Accent Gradient</label>
+                        <input type="text" class="form-control gradient-field @error('accent_gradient') is-invalid @enderror" 
+                               id="accent_gradient" name="accent_gradient" 
+                               value="{{ $settings['accent_gradient']->value ?? 'linear-gradient(135deg, #fdb838 0%, #ef473e 100%)' }}" 
+                               placeholder="linear-gradient(135deg, #fdb838 0%, #ef473e 100%)">
+                        @error('accent_gradient')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Gradient for buttons and highlights</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Preview</label>
+                    <div class="theme-preview p-3 border rounded" id="theme-preview">
+                        <h5 class="mb-2">Sample Heading</h5>
+                        <p class="mb-2">This is sample text to preview your color scheme.</p>
+                        <button class="btn btn-sm me-2">Sample Button</button>
+                        <span class="badge">Sample Badge</span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" id="reset-colors">
+                        <i class="fas fa-undo me-2"></i>Reset to Default
+                    </button>
+                    <div>
+                        <button type="button" class="btn btn-info me-2" id="preview-theme">
+                            <i class="fas fa-eye me-2"></i>Preview Changes
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Save Theme Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zoom API Settings -->
+        <div class="modern-card mt-4">
+            <div class="modern-card-header">
+                <h5 class="modern-card-title">
+                    <i class="fas fa-video me-2"></i>Zoom API Configuration
+                </h5>
+                <p class="modern-card-subtitle">Configure Zoom integration for video lessons</p>
+            </div>
+            <div class="modern-card-body">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_api_key" class="form-label">Zoom API Key</label>
+                            <input type="text" class="form-control @error('zoom_api_key') is-invalid @enderror" 
+                                   id="zoom_api_key" name="zoom_api_key" 
+                                   value="{{ $settings['zoom_api_key']->value ?? '' }}" 
+                                   placeholder="Enter your Zoom API Key">
+                            @error('zoom_api_key')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from your Zoom App Marketplace</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_api_secret" class="form-label">Zoom API Secret</label>
+                            <input type="password" class="form-control @error('zoom_api_secret') is-invalid @enderror" 
+                                   id="zoom_api_secret" name="zoom_api_secret" 
+                                   value="{{ $settings['zoom_api_secret']->value ?? '' }}" 
+                                   placeholder="Enter your Zoom API Secret">
+                            @error('zoom_api_secret')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from your Zoom App Marketplace</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_account_id" class="form-label">Zoom Account ID</label>
+                            <input type="text" class="form-control @error('zoom_account_id') is-invalid @enderror" 
+                                   id="zoom_account_id" name="zoom_account_id" 
+                                   value="{{ $settings['zoom_account_id']->value ?? '' }}" 
+                                   placeholder="Enter your Zoom Account ID">
+                            @error('zoom_account_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Your Zoom Account ID (JWT App)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_webhook_secret" class="form-label">Zoom Webhook Secret</label>
+                            <input type="password" class="form-control @error('zoom_webhook_secret') is-invalid @enderror" 
+                                   id="zoom_webhook_secret" name="zoom_webhook_secret" 
+                                   value="{{ $settings['zoom_webhook_secret']->value ?? '' }}" 
+                                   placeholder="Enter your Zoom Webhook Secret">
+                            @error('zoom_webhook_secret')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">For webhook verification (optional)</small>
+                        </div>
+                    </div>
+
+                    <!-- Webhook Endpoints Section -->
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-link me-2"></i>Webhook Endpoints
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_webhook_meeting_endpoint" class="form-label">Meeting Ended Webhook URL</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" 
+                                       id="zoom_webhook_meeting_endpoint" 
+                                       value="{{ url('/webhook/zoom/meeting-ended') }}" 
+                                       readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('zoom_webhook_meeting_endpoint')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Copy this URL to Zoom Marketplace webhook settings</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_webhook_recording_endpoint" class="form-label">Recording Completed Webhook URL</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" 
+                                       id="zoom_webhook_recording_endpoint" 
+                                       value="{{ url('/webhook/zoom/recording-completed') }}" 
+                                       readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('zoom_webhook_recording_endpoint')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Copy this URL to Zoom Marketplace webhook settings</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="alert alert-info">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-info-circle me-2"></i>Webhook Setup Instructions
+                                </h6>
+                                <ol class="mb-0">
+                                    <li>Go to <a href="https://marketplace.zoom.us/" target="_blank">Zoom Marketplace</a></li>
+                                    <li>Create a "Webhook Only" app</li>
+                                    <li>Add the webhook URLs above to your app</li>
+                                    <li>Subscribe to events: <code>meeting.ended</code> and <code>recording.completed</code></li>
+                                    <li>Copy the verification token to "Zoom Webhook Secret" field above</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_auto_recording" class="form-label">Auto Recording</label>
+                            <select class="form-select @error('zoom_auto_recording') is-invalid @enderror" 
+                                    id="zoom_auto_recording" name="zoom_auto_recording">
+                                <option value="none" {{ ($settings['zoom_auto_recording']->value ?? 'cloud') == 'none' ? 'selected' : '' }}>No Recording</option>
+                                <option value="local" {{ ($settings['zoom_auto_recording']->value ?? 'cloud') == 'local' ? 'selected' : '' }}>Local Recording</option>
+                                <option value="cloud" {{ ($settings['zoom_auto_recording']->value ?? 'cloud') == 'cloud' ? 'selected' : '' }}>Cloud Recording</option>
+                            </select>
+                            @error('zoom_auto_recording')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Default recording setting for meetings</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_waiting_room" class="form-label">Waiting Room</label>
+                            <select class="form-select @error('zoom_waiting_room') is-invalid @enderror" 
+                                    id="zoom_waiting_room" name="zoom_waiting_room">
+                                <option value="0" {{ ($settings['zoom_waiting_room']->value ?? '0') == '0' ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ ($settings['zoom_waiting_room']->value ?? '0') == '1' ? 'selected' : '' }}>Enabled</option>
+                            </select>
+                            @error('zoom_waiting_room')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Enable waiting room for meetings</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_join_before_host" class="form-label">Join Before Host</label>
+                            <select class="form-select @error('zoom_join_before_host') is-invalid @enderror" 
+                                    id="zoom_join_before_host" name="zoom_join_before_host">
+                                <option value="0" {{ ($settings['zoom_join_before_host']->value ?? '1') == '0' ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ ($settings['zoom_join_before_host']->value ?? '1') == '1' ? 'selected' : '' }}>Enabled</option>
+                            </select>
+                            @error('zoom_join_before_host')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Allow participants to join before host</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="zoom_mute_upon_entry" class="form-label">Mute Upon Entry</label>
+                            <select class="form-select @error('zoom_mute_upon_entry') is-invalid @enderror" 
+                                    id="zoom_mute_upon_entry" name="zoom_mute_upon_entry">
+                                <option value="0" {{ ($settings['zoom_mute_upon_entry']->value ?? '0') == '0' ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ ($settings['zoom_mute_upon_entry']->value ?? '0') == '1' ? 'selected' : '' }}>Enabled</option>
+                            </select>
+                            @error('zoom_mute_upon_entry')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Mute participants when they join</small>
+                        </div>
+                    </div>
+
+                    <!-- WebSocket Settings -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-plug me-2"></i>WebSocket Event Subscription
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="zoom_websocket_subscription_id" class="form-label">WebSocket Subscription ID</label>
+                            <input type="text" class="form-control @error('zoom_websocket_subscription_id') is-invalid @enderror" 
+                                   id="zoom_websocket_subscription_id" name="zoom_websocket_subscription_id" 
+                                   value="{{ $settings['zoom_websocket_subscription_id']->value ?? '' }}" 
+                                   placeholder="Enter WebSocket Subscription ID">
+                            @error('zoom_websocket_subscription_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from Zoom WebSocket Event Subscription</small>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="zoom_websocket_endpoint" class="form-label">WebSocket Endpoint URL</label>
+                            <input type="url" class="form-control @error('zoom_websocket_endpoint') is-invalid @enderror" 
+                                   id="zoom_websocket_endpoint" name="zoom_websocket_endpoint" 
+                                   value="{{ $settings['zoom_websocket_endpoint']->value ?? '' }}" 
+                                   placeholder="https://yourdomain.com/websocket/zoom/event">
+                            @error('zoom_websocket_endpoint')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Your WebSocket event endpoint URL</small>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="zoom_websocket_url" class="form-label">WebSocket Server URL</label>
+                            <input type="text" class="form-control @error('zoom_websocket_url') is-invalid @enderror" 
+                                   id="zoom_websocket_url" name="zoom_websocket_url" 
+                                   value="{{ $settings['zoom_websocket_url']->value ?? '' }}" 
+                                   placeholder="wss://ws.zoom.us/ws">
+                            @error('zoom_websocket_url')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Zoom WebSocket server URL</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Zoom API Setup Instructions:</strong>
+                        <ol class="mb-0 mt-2">
+                            <li>Go to <a href="https://marketplace.zoom.us/" target="_blank">Zoom App Marketplace</a></li>
+                            <li>Create a JWT App or Server-to-Server OAuth App</li>
+                            <li>Copy the API Key, API Secret, and Account ID</li>
+                            <li>Configure webhook endpoints if needed</li>
+                            <li>Test the connection using the button below</li>
+                        </ol>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-info" onclick="testZoomConnection()">
+                            <i class="fas fa-plug me-2"></i>Test Zoom Connection
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Zoom Settings
+                        </button>
+                    </div>
+            </div>
+        </div>
+
+        <!-- WordPress OAuth Settings -->
+        <div class="modern-card mt-4">
+            <div class="modern-card-header">
+                <h5 class="modern-card-title">
+                    <i class="fab fa-wordpress me-2"></i>WordPress OAuth Configuration
+                </h5>
+                <p class="modern-card-subtitle">Integrate with WordPress for user authentication</p>
+            </div>
+            <div class="modern-card-body">
+               
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="wp_oauth_enabled" class="form-label">Enable WordPress OAuth</label>
+                            <select class="form-select @error('wp_oauth_enabled') is-invalid @enderror" 
+                                    id="wp_oauth_enabled" name="wp_oauth_enabled">
+                                <option value="0" {{ ($settings['wp_oauth_enabled']->value ?? '0') == '0' ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ ($settings['wp_oauth_enabled']->value ?? '0') == '1' ? 'selected' : '' }}>Enabled</option>
+                            </select>
+                            @error('wp_oauth_enabled')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Enable WordPress OAuth login integration</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="wp_oauth_server" class="form-label">WordPress Server URL</label>
+                            <input type="url" class="form-control @error('wp_oauth_server') is-invalid @enderror" 
+                                   id="wp_oauth_server" name="wp_oauth_server" 
+                                   value="{{ $settings['wp_oauth_server']->value ?? '' }}" 
+                                   placeholder="https://your-wordpress-site.com">
+                            @error('wp_oauth_server')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Your WordPress site URL</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="wp_oauth_client_id" class="form-label">OAuth Client ID</label>
+                            <input type="text" class="form-control @error('wp_oauth_client_id') is-invalid @enderror" 
+                                   id="wp_oauth_client_id" name="wp_oauth_client_id" 
+                                   value="{{ $settings['wp_oauth_client_id']->value ?? '' }}" 
+                                   placeholder="Enter your OAuth Client ID">
+                            @error('wp_oauth_client_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from your WordPress OAuth app</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="wp_oauth_client_secret" class="form-label">OAuth Client Secret</label>
+                            <input type="password" class="form-control @error('wp_oauth_client_secret') is-invalid @enderror" 
+                                   id="wp_oauth_client_secret" name="wp_oauth_client_secret" 
+                                   value="{{ $settings['wp_oauth_client_secret']->value ?? '' }}" 
+                                   placeholder="Enter your OAuth Client Secret">
+                            @error('wp_oauth_client_secret')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from your WordPress OAuth app</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="wp_oauth_redirect_uri" class="form-label">OAuth Redirect URI</label>
+                            <input type="url" class="form-control @error('wp_oauth_redirect_uri') is-invalid @enderror" 
+                                   id="wp_oauth_redirect_uri" name="wp_oauth_redirect_uri" 
+                                   value="{{ $settings['wp_oauth_redirect_uri']->value ?? '' }}" 
+                                   placeholder="http://localhost/OnlineLessonBookingSystem/callback">
+                            @error('wp_oauth_redirect_uri')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">This should match the redirect URI in your WordPress OAuth app</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>WordPress OAuth Setup Instructions:</strong>
+                        <ol class="mb-0 mt-2">
+                            <li>Install and configure OAuth plugin on your WordPress site</li>
+                            <li>Create a new OAuth application</li>
+                            <li>Copy the Client ID and Client Secret</li>
+                            <li>Set the redirect URI to match your application</li>
+                            <li>Test the connection using the button below</li>
+                        </ol>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-info" onclick="testWordPressConnection()">
+                            <i class="fas fa-plug me-2"></i>Test WordPress Connection
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save WordPress Settings
+                        </button>
+            </div>
+        </div>
+            </div>
+
+           
+
+        <!-- Pusher Settings for Real-time Notifications -->
+        <div class="modern-card mt-4">
+            <div class="modern-card-header">
+                <h5 class="modern-card-title">
+                    <i class="fas fa-bell me-2"></i>Real-time Notifications (Pusher)
+                </h5>
+                <p class="modern-card-subtitle">Configure real-time notifications and broadcasting</p>
+            </div>
+            <div class="modern-card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="broadcast_driver" class="form-label">Broadcast Driver</label>
+                            <select class="form-select @error('broadcast_driver') is-invalid @enderror" 
+                                    id="broadcast_driver" name="broadcast_driver">
+                                <option value="pusher" {{ ($settings['broadcast_driver']->value ?? 'pusher') === 'pusher' ? 'selected' : '' }}>Pusher</option>
+                                <option value="redis" {{ ($settings['broadcast_driver']->value ?? 'pusher') === 'redis' ? 'selected' : '' }}>Redis</option>
+                                <option value="log" {{ ($settings['broadcast_driver']->value ?? 'pusher') === 'log' ? 'selected' : '' }}>Log (Development)</option>
+                                <option value="null" {{ ($settings['broadcast_driver']->value ?? 'pusher') === 'null' ? 'selected' : '' }}>Disabled</option>
+                            </select>
+                            @error('broadcast_driver')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Choose how to handle real-time notifications</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="pusher_app_key" class="form-label">Pusher App Key</label>
+                            <input type="text" class="form-control @error('pusher_app_key') is-invalid @enderror" 
+                                   id="pusher_app_key" name="pusher_app_key" 
+                                   value="{{ $settings['pusher_app_key']->value ?? '' }}" 
+                                   placeholder="Enter your Pusher App Key">
+                            @error('pusher_app_key')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from your Pusher app dashboard</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="pusher_app_secret" class="form-label">Pusher App Secret</label>
+                            <input type="password" class="form-control @error('pusher_app_secret') is-invalid @enderror" 
+                                   id="pusher_app_secret" name="pusher_app_secret" 
+                                   value="{{ $settings['pusher_app_secret']->value ?? '' }}" 
+                                   placeholder="Enter your Pusher App Secret">
+                            @error('pusher_app_secret')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from your Pusher app dashboard</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="pusher_app_id" class="form-label">Pusher App ID</label>
+                            <input type="text" class="form-control @error('pusher_app_id') is-invalid @enderror" 
+                                   id="pusher_app_id" name="pusher_app_id" 
+                                   value="{{ $settings['pusher_app_id']->value ?? '' }}" 
+                                   placeholder="Enter your Pusher App ID">
+                            @error('pusher_app_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Get this from your Pusher app dashboard</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="pusher_app_cluster" class="form-label">Pusher Cluster</label>
+                            <select class="form-select @error('pusher_app_cluster') is-invalid @enderror" 
+                                    id="pusher_app_cluster" name="pusher_app_cluster">
+                                <option value="mt1" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'mt1' ? 'selected' : '' }}>US East (mt1)</option>
+                                <option value="mt2" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'mt2' ? 'selected' : '' }}>US West (mt2)</option>
+                                <option value="us2" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'us2' ? 'selected' : '' }}>US Central (us2)</option>
+                                <option value="us3" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'us3' ? 'selected' : '' }}>US South (us3)</option>
+                                <option value="eu" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'eu' ? 'selected' : '' }}>Europe (eu)</option>
+                                <option value="ap1" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'ap1' ? 'selected' : '' }}>Asia Pacific (ap1)</option>
+                                <option value="ap2" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'ap2' ? 'selected' : '' }}>Asia Pacific (ap2)</option>
+                                <option value="ap3" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'ap3' ? 'selected' : '' }}>Asia Pacific (ap3)</option>
+                                <option value="ap4" {{ ($settings['pusher_app_cluster']->value ?? 'mt1') === 'ap4' ? 'selected' : '' }}>Asia Pacific (ap4)</option>
+                            </select>
+                            @error('pusher_app_cluster')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">Choose the cluster closest to your users</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Pusher Setup Instructions:</strong>
+                        <ol class="mb-0 mt-2">
+                            <li>Create a free account at <a href="https://pusher.com" target="_blank">pusher.com</a></li>
+                            <li>Create a new app in your Pusher dashboard</li>
+                            <li>Copy the App Key, Secret, and App ID</li>
+                            <li>Choose the appropriate cluster for your region</li>
+                            <li>Test the connection using the button below</li>
+                        </ol>
+                    </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-info" onclick="testPusherConnection()">
+                        <i class="fas fa-plug me-2"></i>Test Pusher Connection
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Pusher Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+             <!-- System Commands & Maintenance -->
+        <div class="card shadow mt-4 d-none">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-terminal me-2"></i>System Commands & Maintenance
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="text-center">
+                            <i class="fas fa-terminal fa-3x text-primary mb-3"></i>
+                            <h5 class="text-primary mb-3">System Commands & Maintenance</h5>
+                            <p class="text-muted mb-4">
+                                Access comprehensive system management tools including database operations, 
+                                system cleanup, notifications, cron jobs, email management, and more.
+                            </p>
+                            <a href="{{ route('admin.commands.index') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-terminal me-2"></i>Open Commands Panel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-cogs me-2"></i>Available Features
+                        </h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Database Operations</li>
+                            <li><i class="fas fa-check text-success me-2"></i>System Cleanup</li>
+                            <li><i class="fas fa-check text-success me-2"></i>System Maintenance</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Security & Permissions</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Performance & Monitoring</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Emergency Actions</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-plus me-2"></i>Advanced Features
+                        </h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Notifications & Real-time</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Cron Jobs & Scheduling</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Email & Communication</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Database & Storage</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Security & Logs</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Custom Commands</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </form>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="modern-card">
+            <div class="modern-card-header">
+                <h5 class="modern-card-title">
+                    <i class="fas fa-info-circle me-2"></i>System Information
+                </h5>
+                <p class="modern-card-subtitle">Current system status and version information</p>
+            </div>
+            <div class="modern-card-body">
+                <div class="mb-3">
+                    <strong>Laravel Version:</strong>
+                    <span class="text-muted">{{ app()->version() }}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>PHP Version:</strong>
+                    <span class="text-muted">{{ phpversion() }}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Database:</strong>
+                    <span class="text-muted">{{ config('database.default') }}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Environment:</strong>
+                    <span class="text-muted">{{ config('app.env') }}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Debug Mode:</strong>
+                    <span class="text-muted">{{ config('app.debug') ? 'Enabled' : 'Disabled' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="modern-card mt-4">
+            <div class="modern-card-header">
+                <h5 class="modern-card-title">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+                <p class="modern-card-subtitle">Quick access to frequently used features</p>
+            </div>
+            <div class="modern-card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-users me-2"></i>Manage Users
+                    </a>
+                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-outline-success">
+                        <i class="fas fa-calendar-alt me-2"></i>Manage Bookings
+                    </a>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-info">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function testZoomConnection() {
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Testing Connection...';
+    
+    // Make AJAX request to test Zoom connection
+    fetch('{{ route("admin.settings.test-zoom") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('success', 'Zoom connection successful! API is working properly.');
+        } else {
+            showAlert('danger', 'Zoom connection failed: ' + data.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Error testing Zoom connection: ' + error.message);
+    })
+    .finally(() => {
+        // Restore button state
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Insert at the top of the Zoom settings card
+    const zoomCard = document.querySelector('.card.shadow.mt-4');
+    zoomCard.insertBefore(alertDiv, zoomCard.firstChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+function testWordPressConnection() {
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Testing Connection...';
+    
+    // Make AJAX request to test WordPress connection
+    fetch('{{ route("admin.settings.test-wordpress") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showWordPressAlert('success', 'WordPress connection successful! OAuth endpoints are accessible.');
+        } else {
+            showWordPressAlert('danger', 'WordPress connection failed: ' + data.message);
+        }
+    })
+    .catch(error => {
+        showWordPressAlert('danger', 'Error testing WordPress connection: ' + error.message);
+    })
+    .finally(() => {
+        // Restore button state
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+}
+
+function showWordPressAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Insert at the top of the WordPress settings card
+    const wpCards = document.querySelectorAll('.card.shadow.mt-4');
+    const wpCard = wpCards[wpCards.length - 1]; // Get the last card (WordPress)
+    wpCard.insertBefore(alertDiv, wpCard.firstChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+function testPusherConnection() {
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Testing...';
+    
+    fetch('{{ route("admin.settings.test-pusher") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Restore button
+        button.disabled = false;
+        button.innerHTML = originalText;
+        
+        // Show result
+        showAlert(data.success ? 'success' : 'danger', data.message);
+    })
+    .catch(error => {
+        // Restore button
+        button.disabled = false;
+        button.innerHTML = originalText;
+        
+        // Show error
+        showAlert('danger', 'Error testing Pusher connection: ' + error.message);
+    });
+}
+
+// Copy to clipboard function for webhook endpoints
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    const text = element.value;
+    
+    // Use the modern clipboard API if available
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showAlert('success', 'Webhook URL copied to clipboard!');
+        }).catch(err => {
+            fallbackCopyTextToClipboard(text);
+        });
+    } else {
+        fallbackCopyTextToClipboard(text);
+    }
+}
+
+// Fallback for older browsers
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showAlert('success', 'Webhook URL copied to clipboard!');
+        } else {
+            showAlert('warning', 'Unable to copy. Please copy manually.');
+        }
+    } catch (err) {
+        showAlert('warning', 'Unable to copy. Please copy manually.');
+    }
+    
+    document.body.removeChild(textArea);
+}
+</script>
+@endsection
+
+@section('styles')
+<style>
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #fdb838 0%, #ef473e 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0.5rem 0 0 0;
+    }
+    
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    /* Modern Card */
+    .modern-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: none;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .modern-card-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .modern-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .modern-card-subtitle {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin: 0.25rem 0 0 0;
+    }
+    
+    .modern-card-body {
+        padding: 1.5rem;
+    }
+    
+    /* Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.75rem;
+        display: block;
+        font-size: 0.95rem;
+    }
+    
+    .form-label i {
+        color: #ef473e;
+        width: 16px;
+    }
+    
+    .modern-input, .modern-select, .modern-textarea {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .modern-input:focus, .modern-select:focus, .modern-textarea:focus {
+        border-color: #ef473e;
+        box-shadow: 0 0 0 0.2rem rgba(239, 71, 62, 0.25);
+        outline: none;
+    }
+    
+    /* Gradient Settings */
+    .gradient-field {
+        transition: all 0.3s ease;
+    }
+    
+    .gradient-field.hidden {
+        display: none !important;
+    }
+    
+    .form-check-input:checked {
+        background-color: #ef473e;
+        border-color: #ef473e;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .header-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+        
+        .modern-card-header,
+        .modern-card-body {
+            padding: 1rem;
+        }
+    }
+</style>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Color picker synchronization
+    const colorInputs = [
+        'primary_bg_color', 'secondary_bg_color', 'primary_text_color', 
+        'secondary_text_color', 'accent_color', 'border_color', 
+        'navbar_bg_color', 'navbar_text_color', 'sidebar_bg_color', 
+        'sidebar_text_color', 'sidebar_hover_color', 'page_header_bg_color'
+    ];
+
+    colorInputs.forEach(inputId => {
+        const colorInput = document.getElementById(inputId);
+        const textInput = document.getElementById(inputId + '_text');
+        
+        if (colorInput && textInput) {
+            colorInput.addEventListener('input', function() {
+                textInput.value = this.value;
+                updatePreview();
+            });
+        }
+    });
+
+    // Gradient settings functionality
+    const useGradientsCheckbox = document.getElementById('use_gradients_checkbox');
+    const useGradientsHidden = document.getElementById('use_gradients');
+    const gradientFields = [
+        'brand_gradient', 'sidebar_gradient', 'navbar_gradient', 'accent_gradient'
+    ];
+
+    function toggleGradientFields() {
+        if (!useGradientsCheckbox || !useGradientsHidden) {
+            console.error('Gradient elements not found');
+            return;
+        }
+        
+        const isEnabled = useGradientsCheckbox.checked;
+        useGradientsHidden.value = isEnabled ? '1' : '';
+        
+        console.log('Gradient toggle:', isEnabled, 'Hidden value:', useGradientsHidden.value);
+        
+        gradientFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                const row = field.closest('.col-md-6');
+                if (row) {
+                    if (isEnabled) {
+                        row.style.display = 'block';
+                        row.classList.remove('hidden');
+                    } else {
+                        row.style.display = 'none';
+                        row.classList.add('hidden');
+                    }
+                    console.log('Toggled field:', fieldId, 'Display:', row.style.display);
+                }
+            }
+        });
+    }
+
+    // Initialize gradient fields visibility
+    if (useGradientsCheckbox && useGradientsHidden) {
+        toggleGradientFields();
+        
+        // Add event listener for checkbox change
+        useGradientsCheckbox.addEventListener('change', toggleGradientFields);
+    } else {
+        console.error('Gradient checkbox or hidden field not found');
+    }
+
+    // Reset to default colors
+    document.getElementById('reset-colors').addEventListener('click', function() {
+        const defaults = {
+            'primary_bg_color': '#f8f9fa',
+            'secondary_bg_color': '#ffffff',
+            'primary_text_color': '#212529',
+            'secondary_text_color': '#6c757d',
+            'accent_color': '#007bff',
+            'border_color': '#dee2e6',
+            'navbar_bg_color': '#343a40',
+            'navbar_text_color': '#ffffff'
+        };
+
+        Object.keys(defaults).forEach(key => {
+            const colorInput = document.getElementById(key);
+            const textInput = document.getElementById(key + '_text');
+            if (colorInput && textInput) {
+                colorInput.value = defaults[key];
+                textInput.value = defaults[key];
+            }
+        });
+        updatePreview();
+    });
+
+    // Preview theme changes
+    document.getElementById('preview-theme').addEventListener('click', function() {
+        applyThemePreview();
+    });
+
+    function updatePreview() {
+        const preview = document.getElementById('theme-preview');
+        if (!preview) return;
+
+        const primaryBg = document.getElementById('primary_bg_color').value;
+        const secondaryBg = document.getElementById('secondary_bg_color').value;
+        const primaryText = document.getElementById('primary_text_color').value;
+        const secondaryText = document.getElementById('secondary_text_color').value;
+        const accent = document.getElementById('accent_color').value;
+        const border = document.getElementById('border_color').value;
+
+        preview.style.backgroundColor = secondaryBg;
+        preview.style.color = primaryText;
+        preview.style.borderColor = border;
+        
+        const heading = preview.querySelector('h5');
+        if (heading) heading.style.color = primaryText;
+        
+        const paragraph = preview.querySelector('p');
+        if (paragraph) paragraph.style.color = secondaryText;
+        
+        const button = preview.querySelector('button');
+        if (button) {
+            button.style.backgroundColor = accent;
+            button.style.borderColor = accent;
+            button.style.color = '#ffffff';
+        }
+    }
+
+    function applyThemePreview() {
+        const primaryBg = document.getElementById('primary_bg_color').value;
+        const secondaryBg = document.getElementById('secondary_bg_color').value;
+        const primaryText = document.getElementById('primary_text_color').value;
+        const secondaryText = document.getElementById('secondary_text_color').value;
+        const accent = document.getElementById('accent_color').value;
+        const border = document.getElementById('border_color').value;
+        const navbarBg = document.getElementById('navbar_bg_color').value;
+        const navbarText = document.getElementById('navbar_text_color').value;
+
+        // Create CSS variables
+        const css = `
+            :root {
+                --custom-primary-bg: ${primaryBg};
+                --custom-secondary-bg: ${secondaryBg};
+                --custom-primary-text: ${primaryText};
+                --custom-secondary-text: ${secondaryText};
+                --custom-accent: ${accent};
+                --custom-border: ${border};
+                --custom-navbar-bg: ${navbarBg};
+                --custom-navbar-text: ${navbarText};
+            }
+            
+            body {
+                background-color: var(--custom-primary-bg) !important;
+                color: var(--custom-primary-text) !important;
+            }
+            
+            .card {
+                background-color: var(--custom-secondary-bg) !important;
+                border-color: var(--custom-border) !important;
+            }
+            
+            .navbar {
+                background-color: var(--custom-navbar-bg) !important;
+            }
+            
+            .navbar .nav-link {
+                color: var(--custom-navbar-text) !important;
+            }
+            
+            .btn-primary {
+                background-color: var(--custom-accent) !important;
+                border-color: var(--custom-accent) !important;
+            }
+            
+            h1, h2, h3, h4, h5, h6 {
+                color: var(--custom-primary-text) !important;
+            }
+            
+            .text-muted {
+                color: var(--custom-secondary-text) !important;
+            }
+        `;
+
+        // Remove existing preview styles
+        const existingStyle = document.getElementById('theme-preview-styles');
+        if (existingStyle) {
+            existingStyle.remove();
+        }
+
+        // Add new preview styles
+        const style = document.createElement('style');
+        style.id = 'theme-preview-styles';
+        style.textContent = css;
+        document.head.appendChild(style);
+
+        // Show preview message
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-info alert-dismissible fade show position-fixed';
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+        alert.innerHTML = `
+            <i class="fas fa-eye me-2"></i>
+            <strong>Theme Preview Active!</strong><br>
+            This is how your theme will look. Save settings to apply permanently.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alert);
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 5000);
+    }
+
+    // Initialize preview
+    updatePreview();
+});
+
+// Command execution functions
+function runCommand(command) {
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Executing...';
+    
+    // Add command to output
+    addToOutput(`> Executing: ${command}\n`);
+    
+    // Make AJAX request to execute command
+    fetch('{{ route("admin.settings.execute-command") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ command: command })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addToOutput(`✓ Command executed successfully\n`);
+            if (data.output) {
+                addToOutput(data.output);
+            }
+        } else {
+            addToOutput(`✗ Command failed: ${data.message}\n`);
+        }
+    })
+    .catch(error => {
+        addToOutput(`✗ Error: ${error.message}\n`);
+    })
+    .finally(() => {
+        // Restore button state
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+}
+
+function runCustomCommand() {
+    const command = document.getElementById('customCommand').value.trim();
+    if (!command) {
+        alert('Please enter a command');
+        return;
+    }
+    
+    // Add command to output
+    addToOutput(`> Executing custom command: ${command}\n`);
+    
+    // Make AJAX request to execute custom command
+    fetch('{{ route("admin.settings.execute-command") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ command: command })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addToOutput(`✓ Custom command executed successfully\n`);
+            if (data.output) {
+                addToOutput(data.output);
+            }
+        } else {
+            addToOutput(`✗ Custom command failed: ${data.message}\n`);
+        }
+    })
+    .catch(error => {
+        addToOutput(`✗ Error: ${error.message}\n`);
+    });
+}
+
+function addToOutput(text) {
+    const output = document.getElementById('commandOutput');
+    const timestamp = new Date().toLocaleTimeString();
+    const formattedText = `[${timestamp}] ${text}`;
+    
+    // Remove the placeholder text if it exists
+    if (output.querySelector('.text-muted')) {
+        output.innerHTML = '';
+    }
+    
+    output.innerHTML += formattedText;
+    output.scrollTop = output.scrollHeight;
+}
+
+function clearOutput() {
+    document.getElementById('commandOutput').innerHTML = '<div class="text-muted">Command output will appear here...</div>';
+}
+
+function downloadOutput() {
+    const output = document.getElementById('commandOutput').innerText;
+    const blob = new Blob([output], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `command-output-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+</script>
+@endsection
